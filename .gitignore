@@ -29,3 +29,9 @@ yarn.lock
 # ide
 .idea
 *.iml
+src/content/posts/expressive-code.md
+src/content/posts/markdown-extended.md
+src/content/posts/markdown.md
+src/content/posts/video.md
+src/content/posts/guide/cover.jpeg
+src/content/posts/guide/index.md
