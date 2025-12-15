@@ -1,0 +1,51 @@
+name: Deploy with Bun
+
+on:
+  # 监听 main 分支的推送
+  push:
+    branches: [ main ]
+  # 允许手动触发部署
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 拉取源码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 安装 Bun 环境
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # 3. 安装依赖 (使用 bun install)
+      # --frozen-lockfile 类似于 npm ci，确保完全按照 lock 文件安装
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      # 4. 构建项目
+      - name: Build
+        run: bun run build
+
+      # 5. 推送到目标仓库
+      - name: Deploy to External Repository
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          # 使用 Secret
+          token: ${{ secrets.GH_PAGES_TOKEN }}
+          
+          # 目标仓库
+          repository-name: xiaozhao45/xiaozhao45.github.io
+          
+          # 目标仓库的分支
+          target-branch: main 
+          
+          # Astro 默认打包输出文件夹为 dist
+          folder: dist
+          
+          # 部署前清理目标分支旧文件
+          clean: true
