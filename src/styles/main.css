@@ -2,13 +2,34 @@
 
 @layer components {
     .card-base {
-        /* @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition; */
-        @apply rounded-[var(--radius-large)] overflow-hidden transition backdrop-blur-lg;
-        background-color: rgb(from var(--card-bg) r g b / 0.5);
+        /* 保持原有基础样式 */
+        @apply rounded-[var(--radius-large)] overflow-hidden transition;
+
         /*
-        Auther: xiaozhao45
-        Note: I changed it to achieve a frosted glass effect.
-        */
+         *      修复 1: 强制开启硬件加速
+         *      这有助于在移动端流畅渲染复杂的模糊效果
+         */
+        transform: translateZ(0);
+
+        /*
+         *      修复 2: 添加厂商前缀
+         *      Android WebView 和旧版内核必须要有 -webkit- 前缀才能显示毛玻璃
+         */
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+
+        /*
+         *      修复 3: 背景颜色兼容性处理
+         */
+
+        /* 方案 A: 使用 color-mix (兼容性优于 relative color syntax) */
+        background-color: color-mix(in srgb, var(--card-bg), transparent 50%);
+
+        /* 方案 B: 原有的相对颜色语法 (作为最新浏览器的渐进增强)
+         *      Auther: xiaozhao45
+         *      Note: I changed it to achieve a frosted glass effect.
+         */
+        background-color: rgb(from var(--card-bg) r g b / 0.5);
     }
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition;
